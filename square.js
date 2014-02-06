@@ -5,6 +5,7 @@
     square.isMine = false;
     square.numAdjMines = -1;
     square.el = el;
+    square.revealed = false;
 
     square.isMine  = Math.random() < 0.5;
 
@@ -18,6 +19,9 @@
   // Square.prototype.setIsMine = function(isMine) {
   //   square.isMine = isMine;
   // }
+  Square.prototype.setRevealed = function(revealed) {
+    this.revealed = revealed;
+  }
   Square.prototype.setNumAdjMines = function(numAdjMines) {
     this.numAdjMines = numAdjMines;
   }

@@ -58,7 +58,7 @@ span:before {
   line-height: 45px;
   vertical-align: middle;
   display: none;
-  display: block;
+  /*display: block;*/
 }
 
 .square-safe:before {
