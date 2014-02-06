@@ -58,7 +58,8 @@ span:before {
   line-height: 45px;
   vertical-align: middle;
   display: none;
-  /*display: block;*/
+  width: 100%;
+  height: 100%;
 }
 
 .square-safe:before {
@@ -66,9 +67,11 @@ span:before {
   background: #999;
   color: white;
 }
-
 .square-on:before {
   display: block;
+}
+.square-safe[data-mines="0"]:before {
+  content: '';
 }
 
 .square-mine:before {

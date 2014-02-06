@@ -7,7 +7,8 @@
     square.el = el;
     square.revealed = false;
 
-    square.isMine  = Math.random() < 0.5;
+    // square.isMine  = Math.random() < 0.5;
+    square.isMine  = Math.random() < 0.3;
 
     if (square.isMine) {
       square.el.classList.add('square-mine');
@@ -21,6 +22,7 @@
   // }
   Square.prototype.setRevealed = function(revealed) {
     this.revealed = revealed;
+    this.el.classList.add('square-on');
   }
   Square.prototype.setNumAdjMines = function(numAdjMines) {
     this.numAdjMines = numAdjMines;

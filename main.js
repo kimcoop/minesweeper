@@ -5,24 +5,25 @@ var $$ = document.querySelectorAll.bind(document),
 var Minesweeper = (function() {
   var squareEls, squares;
 
-  function coalesce(index, MPR) {
-    console.log('coalesce at index ' + index + ' with MPR ' + MPR );
+  function coalesce(index, SPR) {
+    console.log('coalesce at index ' + index + ' with SPR ' + SPR );
     var square = squares[index];
-    console.debug(square);
-    if (!!square && !square.isMine && !square.revealed && square.numAdjMines == 0) {
-      square.el.click();
+    if (!!square && !square.isMine) {
+      console.debug(square);
+      // square.el.click();
       square.setRevealed(true);
-      var neighborIndices = [ index-MPR, index+MPR ];
-      if (!isLeftEdge(index, MPR)) {
-        neighborIndices = neighborIndices.concat([  index-1, index-MPR-1, index+MPR-1 ]);
+      if (square.numAdjMines != 0) {
+        return;
       }
-      if (!isRightEdge(index, MPR)) {
-        neighborIndices = neighborIndices.concat([ index-MPR+1, index+MPR+1, index+1 ]);
+      var neighborIndices = [ index-SPR, index+SPR ];
+      if (!isLeftEdge(index, SPR)) {
+        neighborIndices = neighborIndices.concat([  index-1, index-SPR-1, index+SPR-1 ]);
       }
-      console.debug(neighborIndices);
+      if (!isRightEdge(index, SPR)) {
+        neighborIndices = neighborIndices.concat([ index-SPR+1, index+SPR+1, index+1 ]);
+      }
       forEach.call(neighborIndices, function(neighborIndex) {
-        console.log('neighIndex ' + neighborIndex);
-        coalesce(neighborIndex, MPR);
+          coalesce(neighborIndex, SPR);
       });
     }
   }
@@ -30,26 +31,25 @@ var Minesweeper = (function() {
   function init() {
     squares = [];
     squareEls = $$('span');
-    var i, MPR = 6;
+    var i, SPR = 6; // mines per row @TODO: use width
 
     forEach.call(squareEls, function(squareEl, index) {
       squareEl.classList.remove('square-on');
       squareEl.classList.remove('square-mine');
       squareEl.classList.remove('square-safe');
-      var square = new Square(squareEl); // mines per row @TODO: use width
+      var square = new Square(squareEl); 
 
       square.el.addEventListener( 'click', function(e) {
         if (square.revealed) {
           return;
         }
+        square.setRevealed(true);
         if (square.isMine) {
-          // trigger mine explode
+          // @TODO trigger mine explode
           alert('trigger mine explode');
         } else {
-          coalesce(index, MPR);
-          console.log('trigger square-safe coalesce');
+          coalesce(index, SPR);
         }
-        square.el.classList.add('square-on');
       });
       squares.push(square);
     });
@@ -59,28 +59,28 @@ var Minesweeper = (function() {
       if (square.isMine) {
         continue;
       }
-      if (!isLeftEdge(i, MPR) && !!squares[i-1] && squares[i-1].isMine) {
+      if (!isLeftEdge(i, SPR) && !!squares[i-1] && squares[i-1].isMine) {
         adjMines++;
       }
-      if (!isLeftEdge(i, MPR) && !!squares[i-MPR-1] && squares[i-MPR-1].isMine) {
+      if (!isLeftEdge(i, SPR) && !!squares[i-SPR-1] && squares[i-SPR-1].isMine) {
         adjMines++;
       }
-      if (!!squares[i-MPR] && squares[i-MPR].isMine) {
+      if (!!squares[i-SPR] && squares[i-SPR].isMine) {
         adjMines++;
       }
-      if (!isRightEdge(i, MPR) && !!squares[i-MPR+1] && squares[i-MPR+1].isMine) {
+      if (!isRightEdge(i, SPR) && !!squares[i-SPR+1] && squares[i-SPR+1].isMine) {
         adjMines++;
       }
-      if (!isRightEdge(i, MPR) && !!squares[i+1] && squares[i+1].isMine) {
+      if (!isRightEdge(i, SPR) && !!squares[i+1] && squares[i+1].isMine) {
         adjMines++;
       }
-      if (!isRightEdge(i, MPR) && !!squares[i+MPR+1] && squares[i+MPR+1].isMine) {
+      if (!isRightEdge(i, SPR) && !!squares[i+SPR+1] && squares[i+SPR+1].isMine) {
         adjMines++;
       }
-      if (!!squares[i+MPR] && squares[i+MPR].isMine) {
+      if (!!squares[i+SPR] && squares[i+SPR].isMine) {
         adjMines++;
       }
-      if (!isLeftEdge(i, MPR) && !!squares[i+MPR-1] && squares[i+MPR-1].isMine) {
+      if (!isLeftEdge(i, SPR) && !!squares[i+SPR-1] && squares[i+SPR-1].isMine) {
         adjMines++;
       }
       square.setNumAdjMines(adjMines);
@@ -88,12 +88,12 @@ var Minesweeper = (function() {
     }
   } // init
 
-  function isLeftEdge(index, MPR) {
-    return index % MPR == 0;
+  function isLeftEdge(index, SPR) {
+    return index % SPR == 0;
   }
 
-  function isRightEdge(index, MPR) {
-    return index % MPR == MPR - 1;
+  function isRightEdge(index, SPR) {
+    return index % SPR == SPR - 1;
   }
 
   function reveal() {
